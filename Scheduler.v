@@ -177,19 +177,19 @@ module Scheduler #(
                 clr_C      = 1'b1;
                 next_k_reg = 1;
 
-                if(row < I_tiles) begin
-                    next_state = compute;
-
-                    if(base_j<=J_tiles-1) begin
-                        next_row = row;
-                    end
-                    else if(base_j>J_tiles-1) begin
-                        next_row        = row+1;
+                if(base_j>J_tiles-1) begin
+                    if(row+1 < I_tiles) begin
+                        next_state = compute;
+                        next_row   = row+1;
+                    end 
+                    else begin
+                        done = 1;
+                        next_state = dn;
                     end
                 end
                 else begin
-                    done=1;
-                    next_state=dn;
+                    next_state = compute;
+                    next_row   = row;
                 end
             end
 
