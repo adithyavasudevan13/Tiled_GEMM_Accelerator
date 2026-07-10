@@ -21,6 +21,6 @@ Before editing any parameters in the testbench make sure to follow these formula
         ADDR_WIDTH = $clog2( max(A_SIZE, B_SIZE, C_SIZE) )
 
 Issues faced during design that were resolved: 
-  1) do_reset's trailing @(posedge clk) raced against load_internal_mem's first write, silently dropping the write to address 0 every single run.
+  1) do_reset's trailing @(posedge clk) raced against load_internal_mem's first write on the testbench, silently dropping the write to address 0 every single run.
   2) Without an explicit "freeze" mechanism, Tensor_Core kept re-latching real A/B wire values every cycle regardless of state, meaning the last k-term's contribution could get added twice during a naive DRAIN state, and prefetching the next tile during DRAIN would corrupt the in-flight accumulation.
   3) Both the start state and the store state asserted clr_C and let compute begin at k_reg=0, but Tensor_Core's registered pipeline lag meant start/store had already latched and "used" the k=0 tile. Letting compute re-request k=0 caused that term to be added into the accumulator twice.
